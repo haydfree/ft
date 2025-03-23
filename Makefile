@@ -2,13 +2,12 @@ TARGET   = ft
 
 GENFLAGS = -ansi -Wall -Wextra -Werror -Wpedantic 
 GDBFLAGS = -g -D_GLIBCXX_DEBUG -D_GNU_SOURCE
-SANFLAGS = -fsanitize=undefined -fsanitize=memory -fno-omit-frame-pointer -fsanitize-memory-track-origins -O1
 
-CC       = clang
+CC       = gcc
 CINCS    = -I./inc 
 CFLAGS   = $(GENFLAGS) $(GDBFLAGS) $(SANFLAGS) $(CINCS)
 
-LINKER   = clang
+LINKER   = gcc
 LINCS    = -I./inc 
 LFLAGS   = $(GENFLAGS) $(GDBFLAGS) $(SANFLAGS) $(LINCS) 
 
