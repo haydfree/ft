@@ -1,58 +1,18 @@
 #include <unistd.h>
+#include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
-
-#define BUFSIZE 255
-
-void writePrompt(void) {
-    if (write(STDOUT_FILENO, "$ ", 2) == -1) {
-        perror("write failed");
-        _exit(1);
-    }
-}
-
-ssize_t readUserInput(char* buf) {
-    ssize_t numBytesRead;
-
-    numBytesRead = read(STDIN_FILENO, buf, BUFSIZE);
-    if (numBytesRead < 0) {
-        perror("read failed");
-        _exit(1);
-    } else if (numBytesRead == 0) {
-        write(STDOUT_FILENO, "goodbye\n", 8);
-        _exit(0);
-    } else{
-        buf[numBytesRead] = '\0';
-    }
-
-    return numBytesRead;
-}
-
-void writeUserInput(char* buf, ssize_t numBytesRead) {
-    if (strncmp(buf, "exit", numBytesRead) == 0) {
-        write(STDOUT_FILENO, "goodbye\n", 8);
-        _exit(0);
-    }
-    if (write(STDOUT_FILENO, buf, numBytesRead) == -1) {
-        perror("write failed");
-        _exit(1);
-    }
-
-    if (write(STDOUT_FILENO, "\n", 1) == -1) {
-        perror("write failed");
-        _exit(1);
-    }
-}
+#include <wayland-client-core.h>
+#include <wayland-client.h>
 
 int main(void) {
-    char buf[BUFSIZE+1];
-    ssize_t numBytesRead;
+    struct wl_display* display = wl_display_connect(NULL);
 
-    while (1) {
-        writePrompt();
-        numBytesRead = readUserInput(buf);
-        writeUserInput(buf, numBytesRead);
+    if (display == NULL) {
+        fprintf(stderr, "%s:%d Error: cannot establish wayland display connection", __FILE__, __LINE__);
+        exit(1);
     }
-
+     
     return 0;
 }

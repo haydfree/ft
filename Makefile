@@ -1,15 +1,15 @@
 TARGET   = ft
 
-GENFLAGS = -ansi -Wall -Wextra -Werror -Wpedantic 
-GDBFLAGS = -g -D_GLIBCXX_DEBUG -D_GNU_SOURCE
+STRICTFLAGS = -std=c99 -Wall -Wextra -Werror -Wpedantic
+DEBUGFLAGS  = -g -D_GNU_SOURCE
 
 CC       = gcc
-CINCS    = -I./inc 
-CFLAGS   = $(GENFLAGS) $(GDBFLAGS) $(SANFLAGS) $(CINCS)
+CINCS    = -I./inc
+CFLAGS   = $(shell pkg-config --cflags wayland-client) $(STRICTFLAGS) $(DEBUGFLAGS) $(CINCS)
 
 LINKER   = gcc
-LINCS    = -I./inc 
-LFLAGS   = $(GENFLAGS) $(GDBFLAGS) $(SANFLAGS) $(LINCS) 
+LINCS    = -I./inc
+LFLAGS   = $(shell pkg-config --libs wayland-client) $(STRICTFLAGS) $(DEBUGFLAGS) $(LINCS) 
 
 SRCDIR   = src
 INCDIR   = inc
@@ -23,33 +23,35 @@ rm       = rm -f
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
 	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
-	@echo "*****LINKING COMPLETE*****"
+	@echo "***** LINKING COMPLETE *****"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
+	@mkdir -p $(OBJDIR) $(BINDIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
-	@echo "*****COMPILATION COMPLETE*****"
+	@echo "***** COMPILATION COMPLETE *****"
 
 .PHONY: run
-run:
+run: $(BINDIR)/$(TARGET)
 	@./$(BINDIR)/$(TARGET)
-	@echo "*****EXECUTION COMPLETE*****"
+	@echo "***** EXECUTION COMPLETE *****"
 
 .PHONY: clean
 clean:
 	@$(rm) $(OBJECTS)
-	@echo "*****CLEANUP COMPLETE*****"
+	@echo "***** CLEANUP COMPLETE *****"
 
 .PHONY: remove
 remove: clean
 	@$(rm) $(BINDIR)/$(TARGET)
-	@echo "*****EXECTUABLE REMOVED*****"
+	@echo "***** EXECUTABLE REMOVED *****"
 
 .PHONY: install
 install:
 	@pkill -x $(TARGET) || true
 	@sleep 1
 	@cp ./bin/$(TARGET) /usr/local/bin/
-	@echo "*****EXECUTABLE INSTALLED*****"  
+	@echo "***** EXECUTABLE INSTALLED *****"  
 
 .PHONY: all
 all: $(BINDIR)/$(TARGET)
+
