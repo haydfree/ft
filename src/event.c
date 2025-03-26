@@ -1,21 +1,19 @@
 #include <event.h>
-#include <render.h>
 
 int running = 1;
 
 void
-handleKeyPress(AppContext* context, XEvent* event) {
-    drawText(context, event);
+handleKeyPress(AppContext* context, TextContent* content, XEvent* event) {
+    render(context, content, event);
 }
 
 void
-handleExpose(AppContext* context, XEvent* event) {
-    (void) context;
-    (void) event;
+handleExpose(AppContext* context, TextContent* content, XEvent* event) {
+    render(context, content, event);
 }
 
 void
-eventLoop(AppContext* context) {
+eventLoop(AppContext* context, TextContent* content) {
     XEvent event;
     XSelectInput(context->display, context->window, KeyPressMask | ExposureMask | StructureNotifyMask);
     while (running) {
@@ -23,10 +21,10 @@ eventLoop(AppContext* context) {
 
         switch (event.type) {
             case Expose:
-                handleExpose(context, &event);
+                handleExpose(context, content, &event);
                 break;
             case KeyPress:
-                handleKeyPress(context, &event);
+                handleKeyPress(context, content, &event);
                 break;
             default:
                 break;
