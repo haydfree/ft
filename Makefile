@@ -1,15 +1,15 @@
 TARGET   = ft
 
-STRICTFLAGS = -std=c99 -Wall -Wextra -Werror -Wpedantic
+STRICTFLAGS = -ansi -Wall -Wextra -Werror -Wpedantic
 DEBUGFLAGS  = -g -D_GNU_SOURCE
 
 CC       = gcc
-CINCS    = -I./inc
-CFLAGS   = $(shell pkg-config --cflags wayland-client) $(STRICTFLAGS) $(DEBUGFLAGS) $(CINCS)
+CINCS    = -I. -I./inc
+CFLAGS   = $(STRICTFLAGS) $(DEBUGFLAGS) $(CINCS)
 
 LINKER   = gcc
-LINCS    = -I./inc
-LFLAGS   = $(shell pkg-config --libs wayland-client) $(STRICTFLAGS) $(DEBUGFLAGS) $(LINCS) 
+LINCS    = -I. -I./inc -lX11
+LFLAGS   = $(STRICTFLAGS) $(DEBUGFLAGS) $(LINCS) 
 
 SRCDIR   = src
 INCDIR   = inc
