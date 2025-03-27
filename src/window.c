@@ -48,17 +48,15 @@ AppContext* initAppContext(void) {
 
     display = openDisplay(); 
     screen = getScreen(display);
-    initConfig(display, screen);
+    context = malloc(sizeof(AppContext));
+    assert(context != NULL);
+    context->display = display;
+    context->screen = screen;
+    initConfig(context);
     parent = getParentWindow(display, screen);
     window = openWindow(display, parent, windowX, windowY, windowWidth, windowHeight, 
         borderWidth, borderColor, backgroundColor);
     gc = createGC(display, window);
-    
-    context = malloc(sizeof(AppContext));
-    assert(context != NULL);
-
-    context->display = display;
-    context->screen = screen;
     context->window = window;
     context->parent = parent;
     context->gc = gc;

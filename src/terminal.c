@@ -6,11 +6,9 @@
 void
 run(void) {
     AppContext* context;
-    TextContent* content;
 
     context = initAppContext();
-    content = initTextContent(context);
     mapWindow(context);
 
-    eventLoop(context, content);
+    eventLoop(context);
 }

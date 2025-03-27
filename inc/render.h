@@ -12,7 +12,11 @@ typedef struct TextContent {
     size_t entryLen;
 } TextContent;
 
-TextContent* initTextContent();
-void render(AppContext* context, TextContent* content, XEvent* event);
+typedef struct TextHistory {
+    TextContent** arr;
+    size_t size;
+} TextHistory;
+
+void render(AppContext* context, XEvent* event);
 
 #endif

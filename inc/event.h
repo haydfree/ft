@@ -5,8 +5,6 @@
 #include <window.h>
 #include <render.h>
 
-void handleKeyPress(AppContext* context, TextContent* content, XEvent* event);
-void handleExpose(AppContext* context, TextContent* content, XEvent* event);
-void eventLoop(AppContext* context, TextContent* content);
+void eventLoop(AppContext* context);
 
 #endif

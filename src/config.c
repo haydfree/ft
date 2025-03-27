@@ -9,9 +9,17 @@ unsigned long borderColor;
 unsigned long backgroundColor;
 unsigned long foregroundColor;
 
-void initConfig(Display* display, int screen) {
-    borderColor = WhitePixel(display, screen);
-    backgroundColor = BlackPixel(display, screen);
-    foregroundColor = WhitePixel(display, screen);
+size_t numColumns = 50;
+size_t numRows = 20;
+size_t textXOffset;
+size_t textYOffset;
+
+void initConfig(AppContext* context) {
+    borderColor = WhitePixel(context->display, context->screen);
+    backgroundColor = BlackPixel(context->display, context->screen);
+    foregroundColor = WhitePixel(context->display, context->screen);
+
+    textXOffset = windowX + 50;
+    textYOffset = windowY + 50;
 }
 
