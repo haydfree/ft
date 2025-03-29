@@ -1,14 +1,11 @@
-#include <terminal.h>
-#include <window.h>
-#include <event.h>
-#include <config.h>
+#include "terminal.h"
+#include "window.h"
+#include "event.h"
 
 void
 run(void) {
-    AppContext* context;
-
-    context = initAppContext();
-    mapWindow(context);
-
+    AppContext* context = createContext();
     eventLoop(context);
+
+    deleteContext(context);
 }

@@ -11,8 +11,7 @@ typedef struct AppContext {
     GC gc;
 } AppContext;
 
-AppContext* initAppContext(void);
-void mapWindow(AppContext* context);
-void closeDisplay(AppContext* context);
+AppContext* createContext(void);
+void deleteContext(AppContext* context);
 
 #endif

@@ -1,7 +1,8 @@
-#include <terminal.h>
+#include "terminal.h"
 
-int main(void) {
+int
+main(void) {
     run();
-
+    
     return 0;
 }
