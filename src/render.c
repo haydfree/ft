@@ -108,8 +108,8 @@ render(AppContext* context) {
     if (history->size <= 0) { sendTextToHistory(); }
     XClearWindow(context->display, context->window);
     for (i = 0; i < history->size; i++) {
-        y = 10 * i; 
-        XDrawString(context->display, context->window, context->gc, 10, y, history->arr[i]->text, 
+        y = 10 * i + 50; 
+        XDrawString(context->display, context->window, context->gc, 50, y, history->arr[i]->text, 
             history->arr[i]->textLen);
     }
 }

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
@@ -22,6 +23,7 @@ eventLoop(AppContext* context) {
             case KeyPress:
                 if (key == XK_Return) {
                     onEnter();
+                    printf("%ld", key);
                 } else if (key == XK_BackSpace) {
                     onBackSpace();
                 } else if (entryFlag == 1) {
