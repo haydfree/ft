@@ -12,7 +12,7 @@ typedef struct TextContent {
     char* text;
     char* entry;
     int textLen;
-    size_t entryLen;
+    int entryLen;
 } TextContent;
 
 typedef struct TextHistory {
@@ -21,7 +21,7 @@ typedef struct TextHistory {
 } TextHistory;
 
 void onEnter(void);
-void onEntry(void);
+void onEntry(char* entry);
 void onBackSpace(void);
 void render(AppContext* context);
 

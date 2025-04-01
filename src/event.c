@@ -15,6 +15,11 @@ eventLoop(AppContext* context) {
     int entryFlag;
     XSelectInput(context->display, context->window, KeyPressMask|ExposureMask|StructureNotifyMask);
     while (1) {
+        memset(&event, 0, sizeof(XEvent));
+        memset(&entry, 0, sizeof(entry));
+        key = 0;
+        entryLen = 0;
+        entryFlag = 0;
         render(context);
         XNextEvent(context->display, &event);
         entryLen = XLookupString(&event.xkey, entry, sizeof(entry)-1, &key, NULL);
@@ -23,11 +28,10 @@ eventLoop(AppContext* context) {
             case KeyPress:
                 if (key == XK_Return) {
                     onEnter();
-                    printf("%ld", key);
                 } else if (key == XK_BackSpace) {
                     onBackSpace();
                 } else if (entryFlag == 1) {
-                    onEntry();
+                    onEntry(entry);
                 }
                 break;
             default:

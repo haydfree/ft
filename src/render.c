@@ -48,7 +48,7 @@ initTextHistory(void) {
         exit(1);
     }
 
-    memset(history->arr, 0, NUM_ROWS);
+    memset(history->arr, 0, NUM_ROWS*sizeof(TextContent*));
     history->size = 0;
     return history;
 }
@@ -56,26 +56,37 @@ initTextHistory(void) {
 static void
 resetEntry(void) {
     memset(content->entry, 0, MAX_ENTRY_LEN);
+    content->entryLen = 0;
 }
 
 static void
 resetText(void) {
-    memset(content->text, 0, MAX_TEXT_LEN);
+    content = initTextContent();
 }
 
 static void
 sendEntryToText(void) {
+    if (content == NULL) {
+        content = initTextContent();
+    }
     strcat(content->text, content->entry);
+    content->textLen += content->entryLen;
 }
 
 static void
 sendTextToHistory(void) {
+    if (history == NULL) {
+        history = initTextHistory();
+    }
     history->arr[history->size] = content;
     history->size += 1;
 }
 
 static void
 removeLastFromText(void) {
+    if (content == NULL) {
+        content = initTextContent();
+    }
     if (content->textLen <= 0) { return; }
     content->textLen -= 1;
     content->text[content->textLen] = '\0';
@@ -95,7 +106,13 @@ onBackSpace(void) {
 }
 
 void
-onEntry(void) {
+onEntry(char* entry) {
+    if (content == NULL) {
+        content = initTextContent();
+    }
+    strncpy(content->entry, entry, MAX_ENTRY_LEN-1);
+    content->entry[MAX_ENTRY_LEN-1]  ='\0';
+    content->entryLen += 1;
     sendEntryToText();
     resetEntry();
 }
