@@ -9,48 +9,52 @@ static TextHistory* history = NULL;
 
 static TextContent*
 initTextContent(void) {
-    content = malloc(sizeof(TextContent));
-    if (content == NULL) {
+    TextContent* c;
+
+    c = malloc(sizeof(TextContent));
+    if (c == NULL) {
         fprintf(stderr, "%s:%d ERROR: content malloc failed\n", __FILE__, __LINE__);
         exit(1);
     }
 
-    content->text = malloc(sizeof(char) * MAX_TEXT_LEN);
-    if (content->text == NULL) {
+    c->text = malloc(sizeof(char) * MAX_TEXT_LEN);
+    if (c->text == NULL) {
         fprintf(stderr, "%s:%d ERROR: content text malloc failed\n", __FILE__, __LINE__);
         exit(1);
     }
 
-    content->entry = malloc(sizeof(char) * MAX_ENTRY_LEN);
-    if (content->entry == NULL) {
+    c->entry = malloc(sizeof(char) * MAX_ENTRY_LEN);
+    if (c->entry == NULL) {
         fprintf(stderr, "%s:%d ERROR: content entry malloc failed\n", __FILE__, __LINE__);
         exit(1);
     }
 
-    memset(content->text, 0, MAX_TEXT_LEN);
-    memset(content->entry, 0, MAX_ENTRY_LEN);
-    content->textLen = 0;
-    content->entryLen = 0;
-    return content;
+    memset(c->text, 0, MAX_TEXT_LEN);
+    memset(c->entry, 0, MAX_ENTRY_LEN);
+    c->textLen = 0;
+    c->entryLen = 0;
+    return c;
 }
 
 static TextHistory*
 initTextHistory(void) {
-    history = malloc(sizeof(TextHistory));
-    if (history == NULL) {
+    TextHistory* h;
+
+    h = malloc(sizeof(TextHistory));
+    if (h == NULL) {
         fprintf(stderr, "%s:%d ERROR: history malloc failed\n", __FILE__, __LINE__);
         exit(1);
     }
 
-    history->arr = malloc(sizeof(TextContent*) * NUM_ROWS);
-    if (history->arr == NULL) {
+    h->arr = malloc(sizeof(TextContent*) * NUM_ROWS);
+    if (h->arr == NULL) {
         fprintf(stderr, "%s:%d ERROR: history arr malloc failed\n", __FILE__, __LINE__);
         exit(1);
     }
 
-    memset(history->arr, 0, NUM_ROWS*sizeof(TextContent*));
-    history->size = 0;
-    return history;
+    memset(h->arr, 0, NUM_ROWS*sizeof(TextContent*));
+    h->size = 0;
+    return h;
 }
 
 static void
@@ -61,7 +65,10 @@ resetEntry(void) {
 
 static void
 resetText(void) {
-    content = initTextContent();
+    memset(content->text, 0, MAX_TEXT_LEN);
+    memset(content->entry, 0, MAX_ENTRY_LEN);
+    content->textLen = 0;
+    content->entryLen = 0;
 }
 
 static void
@@ -75,10 +82,19 @@ sendEntryToText(void) {
 
 static void
 sendTextToHistory(void) {
+    TextContent* c;
     if (history == NULL) {
         history = initTextHistory();
     }
-    history->arr[history->size] = content;
+    if (content == NULL) {
+        fprintf(stderr, "%s:%d ERROR: sending null content to history", __FILE__, __LINE__);
+        exit(1);
+    }
+    c = initTextContent(); 
+    strncpy(c->text, content->text, MAX_TEXT_LEN-1);
+    c->text[MAX_TEXT_LEN-1] = '\0';
+    c->textLen = content->textLen;
+    history->arr[history->size] = c;
     history->size += 1;
 }
 
@@ -117,16 +133,52 @@ onEntry(char* entry) {
     resetEntry();
 }
 
+static void
+drawShellPrompt(AppContext* context, int x, int y) {
+    char prompt[] = {(char)36, '\0'};
+    XDrawString(context->display, context->window, context->gc, x, y, prompt, 1);
+}
+
+static void
+drawShellCursor(AppContext* context, int x, int y) {
+    char cursor[] = {(char)95, '\0'};
+    XDrawString(context->display, context->window, context->gc, x, y, cursor, 1);
+}
+
+void
+renderOutput(char* text) {
+    TextContent* c;
+    if (history == NULL) {
+        history = initTextHistory();
+    }
+    if (text == NULL) {
+        fprintf(stderr, "%s:%d ERROR: sending null output to history", __FILE__, __LINE__);
+        exit(1);
+    }
+    c = initTextContent(); 
+    strncpy(c->text, text, MAX_TEXT_LEN-1);
+    c->text[MAX_TEXT_LEN-1] = '\0';
+    c->textLen = sizeof(text);
+    history->arr[history->size] = c;
+    history->size += 1;
+}
+
 void
 render(AppContext* context) {
     int i, y;
-    if (content == NULL) { initTextContent(); }
-    if (history == NULL) { initTextHistory(); }
-    if (history->size <= 0) { sendTextToHistory(); }
+    if (content == NULL) { content = initTextContent(); }
+    if (history == NULL) { history = initTextHistory(); }
     XClearWindow(context->display, context->window);
     for (i = 0; i < history->size; i++) {
-        y = 10 * i + 50; 
+        y = 15 * i + 50; 
+        drawShellPrompt(context, 50-15, y);
         XDrawString(context->display, context->window, context->gc, 50, y, history->arr[i]->text, 
             history->arr[i]->textLen);
+    }
+    for (i = 0; i < 1; i++) {
+        y = history->size * 15 + 50;
+        drawShellPrompt(context, 50-15, y);
+        XDrawString(context->display, context->window, context->gc, 50, y, content->text, content->textLen);
+        drawShellCursor(context, 50+content->textLen*6, y);
     }
 }

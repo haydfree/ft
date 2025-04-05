@@ -5,6 +5,7 @@
 #include <X11/Xutil.h>
 #include "event.h"
 #include "render.h"
+#include "terminal.h"
 
 void
 eventLoop(AppContext* context) {
@@ -28,6 +29,7 @@ eventLoop(AppContext* context) {
             case KeyPress:
                 if (key == XK_Return) {
                     onEnter();
+                    renderOutput(runProcess());
                 } else if (key == XK_BackSpace) {
                     onBackSpace();
                 } else if (entryFlag == 1) {
