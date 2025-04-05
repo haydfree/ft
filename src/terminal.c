@@ -9,17 +9,17 @@ char*
 runProcess(char* text) {
     FILE* fp;
     char* buf;
-    int bufSize;
+    size_t bufSize;
 
+    bufSize = 255;
     buf = malloc(sizeof(char) * bufSize);
     if (buf == NULL) {
         fprintf(stderr, "%s:%d ERROR: buf malloc failed\n", __FILE__, __LINE__);
         exit(1);
     }
 
-    bufSize = 255;
-    fp = popen(text);
-    fgets(buf, bufSize, fp);
+    fp = popen(text, "r");
+    fgets(buf, 255, fp);
     pclose(fp);
 
     return buf;

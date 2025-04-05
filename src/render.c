@@ -145,6 +145,11 @@ drawShellCursor(AppContext* context, int x, int y) {
     XDrawString(context->display, context->window, context->gc, x, y, cursor, 1);
 }
 
+TextContent*
+getCmd(void) {
+    return history->arr[history->size-1];
+}
+
 void
 renderOutput(char* text) {
     TextContent* c;

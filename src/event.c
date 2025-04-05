@@ -14,6 +14,8 @@ eventLoop(AppContext* context) {
     char entry[MAX_ENTRY_LEN];
     int entryLen;
     int entryFlag;
+    TextContent* content;
+
     XSelectInput(context->display, context->window, KeyPressMask|ExposureMask|StructureNotifyMask);
     while (1) {
         memset(&event, 0, sizeof(XEvent));
@@ -29,7 +31,8 @@ eventLoop(AppContext* context) {
             case KeyPress:
                 if (key == XK_Return) {
                     onEnter();
-                    renderOutput(runProcess());
+                    content = getCmd();
+                    renderOutput(runProcess(content->text));
                 } else if (key == XK_BackSpace) {
                     onBackSpace();
                 } else if (entryFlag == 1) {
