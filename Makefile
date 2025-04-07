@@ -1,6 +1,6 @@
 TARGET   = ft
 
-STRICTFLAGS = -ansi -Wall -Wextra -Werror -Wpedantic -Wconversion -Wshadow -Wuninitialized -Wformat -Wlogical-op -Wimplicit-fallthrough -Wundef -Wmisleading-indentation -Wnull-dereference -Wduplicate-decl-specifier -Wredundant-decls
+STRICTFLAGS = -ansi -Wall -Wextra -Werror -Wpedantic -Wshadow -Wuninitialized -Wformat -Wlogical-op -Wimplicit-fallthrough -Wundef -Wmisleading-indentation -Wnull-dereference -Wduplicate-decl-specifier -Wredundant-decls
 DEBUGFLAGS  = -g -D_GNU_SOURCE
 
 CC       = gcc

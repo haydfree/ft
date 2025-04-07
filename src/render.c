@@ -162,8 +162,7 @@ renderOutput(char* text) {
     }
     c = initTextContent(); 
     strncpy(c->text, text, MAX_TEXT_LEN-1);
-    c->text[MAX_TEXT_LEN-1] = '\0';
-    c->textLen = sizeof(text);
+    c->textLen = strlen(text);
     history->arr[history->size] = c;
     history->size += 1;
 }
