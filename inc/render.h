@@ -26,5 +26,6 @@ void onBackSpace(void);
 void render(AppContext* context);
 void renderOutput(char* text);
 TextContent* getCmd(void);
+void clear(void);
 
 #endif

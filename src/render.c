@@ -168,6 +168,12 @@ renderOutput(char* text) {
 }
 
 void
+clear(void) {
+    history = initTextHistory();
+    content = initTextContent();
+}
+
+void
 render(AppContext* context) {
     int i, y;
     if (content == NULL) { content = initTextContent(); }

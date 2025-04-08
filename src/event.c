@@ -32,7 +32,8 @@ eventLoop(AppContext* context) {
                 if (key == XK_Return) {
                     onEnter();
                     content = getCmd();
-                    renderOutput(runProcess(content->text));
+                    if (strncmp("clear", content->text, 5) == 0) { clear(); } 
+                    else { renderOutput(runProcess(content->text)); }
                 } else if (key == XK_BackSpace) {
                     onBackSpace();
                 } else if (entryFlag == 1) {
