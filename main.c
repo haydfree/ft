@@ -1,28 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdint.h>
 #include <string.h>
 #include <X11/Xlib.h>
 
-int scn, wdx, wdy, cx, cy;
-unsigned int wth, hht, bwh; 
-unsigned long bdr, bgd; 
+uint64_t scn, wdx, wdy, cx, cy, wth, hht, bwh, bdr, bgd; 
 Display* dpy;
 Window wdw, pnt;
 GC gc;
+
+int
+convInt(uint64_t i) {
+}
 
 void
 initDpy(void) {
     dpy = XOpenDisplay(NULL);
     scn = DefaultScreen(dpy);
-    pnt = RootWindow(dpy, scn);
+    assert(scn <= INT16_MAX);
+    pnt = RootWindow(dpy, (int) scn);
     wdx = 10;
     wdy = 10;
     wth = 800;
     hht = 600;
     bwh = 1;
-    bdr = WhitePixel(dpy, scn);
-    bgd = BlackPixel(dpy, scn);
+    bdr = WhitePixel(dpy, (int) scn);
+    bgd = BlackPixel(dpy, (int) scn);
     wdw = XCreateSimpleWindow(dpy, pnt, wdx, wdy, wth, hht, bwh, bdr, bgd);
     XSelectInput(dpy, wdw, ExposureMask | KeyPressMask);
     XMapWindow(dpy, wdw);
@@ -39,6 +43,7 @@ drawInput(char c) {
     str[1] = '\0';
     XDrawString(dpy, wdw, gc, cx, cy, str, 1);
     cx+=6;
+    if (cx >= 0 && (unsigned int) cx >= wth) { cx = 10; cy+=10; }
     XFlush(dpy);
 }
 
@@ -49,7 +54,9 @@ getInput(void) {
     XNextEvent(dpy, &e);    
     if (e.type == KeyPress) {
         key = XLookupKeysym(&e.xkey, 0);
-        return key;
+        if (key <= 127) {
+            return (char) key;
+        }
     }
     return '\0';
 }
@@ -71,7 +78,6 @@ closeDpy(void) {
 
 int
 main(void) {
-    
     initDpy();
     eventLoop();
     closeDpy();
