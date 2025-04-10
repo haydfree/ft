@@ -4,35 +4,29 @@ STRICTFLAGS = -ansi -Wall -Wextra -Werror -Wpedantic -Wshadow -Wuninitialized -W
 DEBUGFLAGS  = -g -D_GNU_SOURCE
 
 CC       = gcc
-CINCS    = -I. -I./inc
+CINCS    = -I. 
 CFLAGS   = $(STRICTFLAGS) $(DEBUGFLAGS) $(CINCS)
 
 LINKER   = gcc
-LINCS    = -I. -I./inc -lX11
+LINCS    = -I. -lX11
 LFLAGS   = $(STRICTFLAGS) $(DEBUGFLAGS) $(LINCS) 
 
-SRCDIR   = src
-INCDIR   = inc
-OBJDIR   = obj
-BINDIR   = bin
-
-SOURCES  := $(wildcard $(SRCDIR)/*.c)
-INCLUDES := $(wildcard $(INCDIR)/*.h)
-OBJECTS  := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+SOURCES  := $(wildcard ./*.c)
+INCLUDES := $(wildcard ./*.h)
+OBJECTS  := $(SOURCES:./%.c=./%.o)
 rm       = rm -f
 
-$(BINDIR)/$(TARGET): $(OBJECTS)
+./$(TARGET): $(OBJECTS)
 	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
 	@echo "***** LINKING COMPLETE *****"
 
-$(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@mkdir -p $(OBJDIR) $(BINDIR)
+$(OBJECTS): ./%.o : ./%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "***** COMPILATION COMPLETE *****"
 
 .PHONY: run
-run: $(BINDIR)/$(TARGET)
-	@./$(BINDIR)/$(TARGET)
+run: ./$(TARGET)
+	@./$(TARGET)
 	@echo "***** EXECUTION COMPLETE *****"
 
 .PHONY: clean
@@ -42,7 +36,7 @@ clean:
 
 .PHONY: remove
 remove: clean
-	@$(rm) $(BINDIR)/$(TARGET)
+	@$(rm) ./$(TARGET)
 	@echo "***** EXECUTABLE REMOVED *****"
 
 .PHONY: install
@@ -53,5 +47,5 @@ install:
 	@echo "***** EXECUTABLE INSTALLED *****"  
 
 .PHONY: all
-all: $(BINDIR)/$(TARGET)
+all: ./$(TARGET)
 
