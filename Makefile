@@ -8,7 +8,7 @@ CINCS    = -I.
 CFLAGS   = $(STRICTFLAGS) $(DEBUGFLAGS) $(CINCS)
 
 LINKER   = gcc
-LINCS    = -I. -lX11
+LINCS    = -I. -lX11 -lsafecast
 LFLAGS   = $(STRICTFLAGS) $(DEBUGFLAGS) $(LINCS) 
 
 SOURCES  := $(wildcard ./*.c)
